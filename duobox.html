@@ -19,6 +19,9 @@
             position: absolute;
             right: 0px;
         }
+        #drawingCanvas {
+            touch-action: none; /* This line disables default touch actions on the canvas */
+        }
     </style>
 </head>
 <body>    
@@ -73,11 +76,13 @@
         }
     
         // Event listeners
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseout', stopDrawing);
+        canvas.addEventListener('pointerdown', startDrawing);
+        canvas.addEventListener('pointermove', draw);
+        canvas.addEventListener('pointerup', stopDrawing);
+        canvas.addEventListener('pointerout', stopDrawing);
+
         clearButton.addEventListener('click', clearCanvas);
+        
         window.addEventListener('resize', resizeCanvas);
     </script>    
 </body>
