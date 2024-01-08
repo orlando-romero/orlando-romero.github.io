@@ -16,5 +16,50 @@
     <p>
         This is where I'll test some drawing game I'd like to develop.
     </p>
+
+    <canvas id="drawingCanvas" width="800" height="600" style="border:1px solid #000000;"></canvas>
+    <label for="lineColor">Choose a color:</label>
+    <input type="color" id="lineColor" name="lineColor" value="#FFFFFF">
+
+    <script>
+        // Get a reference to the canvas element
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const colorPicker = document.getElementById('lineColor');
+        colorPicker.addEventListener('change', function() {
+            ctx.strokeStyle = this.value;
+        });
+
+        // Initialize with the default color
+        ctx.strokeStyle = colorPicker.value;
+    
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+    
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+    
+        function draw(e) {
+            if (!isDrawing) return; // Stop the function if not mouse down
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+    
+        function stopDrawing() {
+            isDrawing = false;
+        }
+    
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+    </script>    
 </body>
 </html>
