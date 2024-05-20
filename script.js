@@ -9,29 +9,22 @@ class Line2D {
         return this.points.length;
     }
 
-    addPoint(x, y) {
-        this.points.push({x: x, y: y});
+    addPoint(x, y, pressure = 1) {
+        this.points.push({x: x, y: y, pressure: pressure});
     }
 
-    // draw(ctx) {
-    //     if (this.points.length === 0) return;
-    //     ctx.beginPath();
-    //     ctx.moveTo(this.points[0].x, this.points[0].y);
-    //     for (let i = 1; i < this.points.length; i++) {
-    //         ctx.lineTo(this.points[i].x, this.points[i].y);
-    //     }
-    //     ctx.stroke();
-    // }
     draw(ctx) {
-        if (this.points.length === 0) return;
-        ctx.beginPath();
-        ctx.moveTo(this.points[0].x, this.points[0].y);
-        for (let i = 1; i < this.points.length; i++) {
-            ctx.lineTo(this.points[i].x, this.points[i].y);
+        if (this.points.length <= 1) return;
+        for (let i = 0; i < this.points.length - 1; i++) {
+            ctx.beginPath();
+            ctx.moveTo(this.points[i].x, this.points[i].y);
+            ctx.lineTo(this.points[i+1].x, this.points[i+1].y);
+            ctx.lineWidth = this.width * 2.0 * this.points[i].pressure;
+            ctx.strokeStyle = this.color;
+            ctx.stroke();
+
+            // console.log(2 * this.points[i].pressure);
         }
-        ctx.lineWidth = this.width;  // Set the pen width
-        ctx.strokeStyle = this.color;  // Set the stroke color
-        ctx.stroke();
     }
 }
 
@@ -44,7 +37,7 @@ const eraserButton = document.getElementById('eraserButton');
 
 // Set initial line settings
 let backgroundColor = "#272727";
-let lineColor = "#ffffff";
+let lineColor = "white";
 let penWidth = 1;
 let eraserWidth = 15;
 
@@ -83,7 +76,7 @@ function onPointerMove(e) {
     lastY = e.offsetY;
     if (pointerDown && insideCanvas) {
         if (tool === 'pen') {
-            lines[lines.length - 1].addPoint(e.offsetX, e.offsetY);            
+            lines[lines.length - 1].addPoint(e.offsetX, e.offsetY, e.pressure);
         }
     }
     draw();
@@ -129,7 +122,8 @@ function changeWidth(amount) {
         penWidth += amount;
         penWidth = Math.max(1, penWidth);
         lines[lines.length - 1].width = penWidth;
-        cursorRadius = Math.max(cursorRadiusMin, penWidth);
+        // cursorRadius = Math.max(cursorRadiusMin, penWidth);
+        cursorRadius = penWidth * 0.6;
     } else {
         eraserWidth += amount;
         eraserWidth = Math.max(1, eraserWidth);
@@ -139,13 +133,27 @@ function changeWidth(amount) {
     draw();
 }
 
+function changeColor(color) {
+    lineColor = color;
+    lines[lines.length - 1].color = lineColor;
+    draw();
+}
+
 //============== Event listeners ==============
 
+const keyActions = {
+    ']': () => changeWidth(1),
+    '[': () => changeWidth(-1),
+    'r': () => changeColor('red'),
+    'g': () => changeColor('green'),
+    'b': () => changeColor('blue'),
+    'w': () => changeColor('white'),
+};
+
 document.addEventListener('keydown', (e) => {
-    if (e.key === ']') {
-        changeWidth(1);
-    } else if (e.key === '[') {
-        changeWidth(-1);
+    const action = keyActions[e.key];
+    if (action) {
+        action();
     }
 });
 
