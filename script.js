@@ -41,7 +41,7 @@ const debugText = document.getElementById('debugText');
 
 // Set initial line settings
 let backgroundColor = "#272727";
-let lineColor = "blue";
+let lineColor = "white";
 let penWidth = 1;
 let eraserWidth = 15;
 const minPenWidth = 0.2;
