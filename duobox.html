@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DuoBox</title>
+    <title>DuoBox 2</title>
     <style>
         body {
             background-color: #272727;
@@ -14,7 +14,17 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-        }        
+        }
+        .button-container {
+            display: flex;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #penPutton, #eraserButton {
+            position: relative;
+            left: 5px;
+        }
         #clearCanvas {
             position: absolute;
             right: 0px;
@@ -26,6 +36,10 @@
 </head>
 <body>    
     <div class="canvas-container">
+        <div class="button-container">
+            <button id="penButton">Pen</button>
+            <button id="eraserButton">Eraser</button>
+        </div>
         <canvas id="drawingCanvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
         <button id="clearCanvas">Clear</button>
     </div>
@@ -35,38 +49,69 @@
         const canvas = document.getElementById('drawingCanvas');
         const ctx = canvas.getContext('2d');
         const clearButton = document.getElementById('clearCanvas');
+        const penButton = document.getElementById('penButton');
+        const eraserButton = document.getElementById('eraserButton');
         
-        // Set line color
+        // Set initial line settings
         const lineColor = "#ffffff";
-        ctx.strokeStyle = lineColor;
+        const backgroundColor = "#272727";
+        const penWidth = 1;
+        const eraserWidth = 15;
         
         // Initialize state
+        let lines = [[]];
         let isDrawing = false;
         let lastX = 0;
         let lastY = 0;
+        let tool = 'pen';
+        let cursorRadiusMin = 3;
+        let cursorRadius = Math.max(cursorRadiusMin, penWidth);
+        let cursorThickness = 1;
         canvas.width = window.innerWidth * 0.9;
         canvas.height = window.innerHeight * 0.9;
+        ctx.lineCap = "round";
+        canvas.style.cursor = 'none';
+
+        let pointerDown = false;
+        let insideCanvas = false;
         
-        function startDrawing(e) {
-            isDrawing = true;
-            [lastX, lastY] = [e.offsetX, e.offsetY];
-        }
-        
-        function draw(e) {
-            if (!isDrawing) return; // Stop the function if not mouse down
+        usePen();
+
+        function usePen() {
+            tool = 'pen';
             ctx.strokeStyle = lineColor;
-            ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
-            ctx.lineTo(e.offsetX, e.offsetY);
-            ctx.stroke();
-            [lastX, lastY] = [e.offsetX, e.offsetY];
+            ctx.lineWidth = penWidth;
+            // canvas.style.cursor = 'crosshair';
+            cursorRadius = Math.max(cursorRadiusMin, penWidth)
         }
-    
-        function stopDrawing() {
-            isDrawing = false;
+        
+        function useEraser() {
+            tool = 'eraser';
+            cursorRadius = Math.max(cursorRadiusMin, eraserWidth)
+        }        
+
+        function draw(e) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (pointerDown && insideCanvas) {
+                if (tool === 'pen') {
+                    lines[lines.length - 1].push({x: e.offsetX, y: e.offsetY});
+                } else if (tool === 'eraser') {
+                }
+            }            
+            drawCursor(e.offsetX, e.offsetY, cursorRadius, cursorThickness)
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].length === 0) continue;
+                ctx.beginPath();
+                ctx.moveTo(lines[i][0].x, lines[i][0].y);
+                for (let j = 1; j < lines[i].length; j++) {
+                    ctx.lineTo(lines[i][j].x, lines[i][j].y);
+                }
+                ctx.stroke();
+            }
         }
 
         function clearCanvas() {
+            lines = [[]];
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
@@ -74,14 +119,46 @@
             canvas.width = window.innerWidth * 0.9;
             canvas.height = window.innerHeight * 0.9;
         }
+
+        function drawCursor(x, y, radius, thickness){
+            if (insideCanvas) {
+                // Outer circle (larger circle)
+                ctx.beginPath();
+                ctx.arc(x, y, radius + thickness, 0, Math.PI * 2);
+                ctx.fillStyle = lineColor;
+                ctx.fill();
+    
+                // Inner circle (smaller circle to create the hole)
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = backgroundColor;
+                ctx.fill();
+            }
+        }
     
         // Event listeners
-        canvas.addEventListener('pointerdown', startDrawing);
+
+        canvas.addEventListener('pointerdown', (e) => pointerDown = true);
+        canvas.addEventListener('pointerup', (e) => {
+            pointerDown = false
+            if (insideCanvas) {
+                lines.push([]);
+            }
+        });
+        
+        canvas.addEventListener('pointerover', (e) => insideCanvas = true);
+        canvas.addEventListener('pointerout', (e) => {
+            insideCanvas = false
+            if (pointerDown) {
+                lines.push([]);
+            }
+        });
+
         canvas.addEventListener('pointermove', draw);
-        canvas.addEventListener('pointerup', stopDrawing);
-        canvas.addEventListener('pointerout', stopDrawing);
 
         clearButton.addEventListener('click', clearCanvas);
+        penButton.addEventListener('click', usePen);
+        eraserButton.addEventListener('click', useEraser);
         
         window.addEventListener('resize', resizeCanvas);
     </script>    
