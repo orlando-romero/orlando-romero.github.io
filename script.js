@@ -14,15 +14,20 @@ class Line2D {
     }
 
     draw(ctx) {
+        // parseFloat(p.pressure.toFixed(precision))
         if (this.points.length <= 1) return;
+        // let pressureAll = this.points.map(p => p.pressure).slice(-10);;
+        const precision = 2;
+        let pressureAll = this.points.map(p => parseFloat(p.pressure.toFixed(precision))).slice(-10);
         for (let i = 0; i < this.points.length - 1; i++) {
             ctx.beginPath();
             ctx.moveTo(this.points[i].x, this.points[i].y);
             ctx.lineTo(this.points[i+1].x, this.points[i+1].y);
-            ctx.lineWidth = this.width * 2.0 * this.points[i].pressure;
+            ctx.lineWidth = Math.max(minPenWidth, this.width * 2.0 * this.points[i].pressure);
             ctx.strokeStyle = this.color;
             ctx.stroke();
         }
+        updateDebugText(`Pen pressure: ${pressureAll}`);
     }
 }
 
@@ -32,12 +37,14 @@ const ctx = canvas.getContext('2d');
 const clearButton = document.getElementById('clearCanvas');
 const penButton = document.getElementById('penButton');
 const eraserButton = document.getElementById('eraserButton');
+const debugText = document.getElementById('debugText');
 
 // Set initial line settings
 let backgroundColor = "#272727";
 let lineColor = "white";
 let penWidth = 1;
 let eraserWidth = 15;
+const minPenWidth = 0.1;
 
 // Initialize state
 let lastX = 300;
@@ -98,6 +105,10 @@ function resizeCanvas() {
     canvas.width = window.innerWidth * 0.9;
     canvas.height = window.innerHeight * 0.9;
     draw();
+}
+
+function updateDebugText(text) {
+    debugText.textContent = text;
 }
 
 function drawCursor(x, y, radius, thickness) {
