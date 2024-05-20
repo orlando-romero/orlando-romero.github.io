@@ -1,0 +1,27 @@
+body {
+    background-color: #272727;
+    color: #e2e2e2;
+}
+.canvas-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.button-container {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#penButton, #eraserButton {
+    position: relative;
+    left: 5px;
+}
+#clearCanvas {
+    position: absolute;
+    right: 0px;
+}
+#drawingCanvas {
+    touch-action: none; /* Disable default touch actions on the canvas */
+}
