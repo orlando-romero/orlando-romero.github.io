@@ -160,7 +160,7 @@ canvas.addEventListener('pointerdown', (e) => {
     if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
     pointerDown = true
 });
-canvas.addEventListener('pointerup', () => {
+canvas.addEventListener('pointerup', (e) => {
     if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
     pointerDown = false;
     if (lines[lines.length - 1].length() <= 1){
