@@ -22,8 +22,6 @@ class Line2D {
             ctx.lineWidth = this.width * 2.0 * this.points[i].pressure;
             ctx.strokeStyle = this.color;
             ctx.stroke();
-
-            // console.log(2 * this.points[i].pressure);
         }
     }
 }
@@ -72,6 +70,7 @@ function useEraser() {
 }
 
 function onPointerMove(e) {
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
     lastX = e.offsetX;
     lastY = e.offsetY;
     if (pointerDown && insideCanvas) {
@@ -157,8 +156,12 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-canvas.addEventListener('pointerdown', () => pointerDown = true);
+canvas.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+    pointerDown = true
+});
 canvas.addEventListener('pointerup', () => {
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
     pointerDown = false;
     if (lines[lines.length - 1].length() <= 1){
         lines.pop();
@@ -183,3 +186,8 @@ penButton.addEventListener('click', usePen);
 eraserButton.addEventListener('click', useEraser);
 
 window.addEventListener('resize', resizeCanvas);
+
+// Prevent touch events
+canvas.addEventListener('touchstart', (e) => e.preventDefault());
+canvas.addEventListener('touchmove', (e) => e.preventDefault());
+canvas.addEventListener('touchend', (e) => e.preventDefault());
