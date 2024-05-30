@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css?family=Mukta');
+
+body {
+    margin: 0px;
+    font-family: 'Mukta';
+    overflow: hidden;
+    background: #171515;
+}
+
+canvas {
+    box-shadow: -3px 2px 9px 6px black;
+    background: #313131;
+    cursor: crosshair;
+    /* width: 96vw;
+    height: 92.5vh; */
+    touch-action: none;
+}
+
+.canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.toolbar-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.toolbar {
+    background-color: #171515;
+    display: flex;
+    margin: 10px auto;
+    padding: 3px;
+}
+
+.toolbar .color-field {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    display: inline-block;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 6px solid #171515;
+    align-self: center;
+    margin: 0 5px;
+}
+
+.toolbar .button {
+    align-self: center;
+    width: 90px;
+    height: 35px;
+    cursor: pointer;
+    color: white;
+    background-color: #2f2f2f;
+    font-size: 100%;
+    margin: 0 5px;
+    border-radius: 10px;
+    border-color: white;
+}
+
+.color-picker {
+    align-self: center;
+    margin: 0 5px;
+    width: 35px;
+    height: 35px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+    border: none;
+    /* border-radius: 50%; */
+}
+
+.pen-range {
+    align-self: center;
+    margin: 0 5px;
+}
+
+.color-popup {
+    position: absolute;
+    top: 300px;
+    left: 300px;
+
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    
+    width: 450x;
+    height: 200px;
+    
+    z-index: 1;
+    background-color: #1f1e1e;
+    border-radius: 5%;
+    border: 1px solid white;
+}
+
+.color-subfield {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    display: inline-block;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 6px solid #1f1e1e;
+    align-self: center;
+    margin: 0 5px;
+}
+
+
+.popup-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-column: span 5;
+}
+
+.slider-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 140px;
+    height: 30px;
+    background-color: #2f2f2f;
+    border-radius: 10px;
+    margin: 0 0px 3px 0;
+    grid-column: span 5;
+}
+
+.slider-container input[type="radio"] {
+    display: none;
+}
+
+.slider-container label {
+    width: 50%;
+    height: 100%;
+    line-height: 30px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    z-index: 2;
+    align-self: center;
+}
+
+.slider-container .slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 50%;
+    height: 26px;
+    background-color: #606060;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+    align-self: center;
+}
+
+#custom:checked ~ .slider {
+    transform: translateX(100%);
+}

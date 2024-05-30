@@ -62,6 +62,12 @@ canvas.style.cursor = 'none';
 let pointerDown = false;
 let insideCanvas = false;
 
+let testLine = new Line2D(1, 'white');
+testLine.addPoint(50, 50);
+testLine.addPoint(100, 100);
+testLine.addPoint(150, 75);
+testLine.draw(ctx);
+
 usePen();
 
 function usePen() {
